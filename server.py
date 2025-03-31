@@ -1,9 +1,9 @@
 from typing import Any
-from io import BytesIO
 
+from starlette.middleware.cors import CORSMiddleware
 import litserve as ls
 
-from fastapi.responses import Response
+from fastapi.responses import Response, JSONResponse
 from pydantic import BaseModel, field_validator
 
 
@@ -49,25 +49,46 @@ class SimpleLitAPI(ls.LitAPI):
             ),
             return_tensors="pt",
         )
-        logits = self.model(
+        scores = self.model.generate(
             **inputs.to(self.model.device),
             do_sample=False,
             eos_token_id=self.processor.decoder_tokenizer.convert_tokens_to_ids(
                 "</translation>"
             ),
+            return_dict_in_generate=True,
             output_scores=True,
-        ).logits
+        ).scores
+
+        logits = [torch.softmax(score, dim=-1)[0].tolist() for score in scores]
 
         return logits
 
     def encode_response(self, logits: torch.Tensor):
-        return {
-            "vocab": self.vocab,
-            "logits": logits.tolist(),
-        }
+        return JSONResponse(
+            content={
+                "vocab": self.vocab,
+                "logits": logits,
+            },
+            media_type="application/json",
+        )
 
 
 if __name__ == "__main__":
     api = SimpleLitAPI()
-    server = ls.LitServer(api, accelerator="auto")
+    server = ls.LitServer(
+        api,
+        accelerator="auto",
+        middlewares=[
+            (
+                CORSMiddleware,
+                {
+                    "allow_origins": ["*"],
+                    "allow_credentials": True,
+                    "allow_methods": ["*"],
+                    "allow_headers": ["*"],
+                },
+            )
+        ],
+    )
+
     server.run(port=8000)
