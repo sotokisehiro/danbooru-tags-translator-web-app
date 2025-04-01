@@ -1,40 +1,54 @@
 # Danbooru Tags Translator Web App
 
+[English version](./README_EN.md)
+
+
 ![](./assets/screenshot.jpg)
 
-## Backend server
+## バックエンドサーバー
 
-Setup:
+`uv` (https://docs.astral.sh/uv/) を使用して環境を構築できます。
+
+セットアップ:
 
 ```
 uv sync
 ```
 
-Run backend server on Linux:
+
+
+Linux でバックエンドサーバーを実行:
 
 ```
 ./scripts/server.sh
 ```
 
-Run backend server on Windows:
+Windows でバックエンドサーバーを実行:
 
 ```
 ./scripts/server.bat
 ```
 
-Note: `scripts/server.sh` is for Linux and `scripts/server.bat` is for Windows.
+注: `scripts/server.sh` は Linux 用、`scripts/server.bat` は Windows 用です。
 
-## Frontend server
+## フロントエンドサーバー
 
-Setup:
+
+Bun (https://bun.sh/) の使用を推奨しますが、お好みで npm などを使っても大丈夫です。
+
+
+セットアップ:
 
 ```
 cd frontend
 bun i
 ```
 
-Run frontend server:
+
+
+フロントエンドサーバーを実行:
 
 ```
 bun dev
 ```
+
