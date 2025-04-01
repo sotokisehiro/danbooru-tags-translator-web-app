@@ -1,8 +1,5 @@
 # Danbooru Tags Translator Web App
 
-[English version](./README_EN.md)
-
-
 ![](./assets/screenshot.jpg)
 
 ## バックエンドサーバー
